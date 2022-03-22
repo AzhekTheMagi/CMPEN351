@@ -1,10 +1,9 @@
 # author: Anthony Vallin, aav5195
-# date: 20220305
+# date: 20220319
 # class: CMPEN 351
 # assignment: Lab 7 part 2
 # Simon Says game, using bitmap display to show colored box square pattern
-# Bugs: Light boxes persist, i.e., clearing them by painting them black causes other colors to not display
-# Bug2: Yellow light displays in the same position as blue light
+
 .data
     stack_beg:     .word 0 : 40
     stack_end:
@@ -13,18 +12,19 @@
     sequenceArray: .word 0 : 5    # holds array of random ints with a range of 1 to 4
     ColorTable:    
                    .word 0x000000 # Black   [0]
-		    .word 0x0000ff # Blue    [1]
-		    .word 0x00ff00 # Green   [2]
-		    .word 0xff0000 # Red     [3]
-		    .word 0x00ffff # Cyan    [4]
-		    .word 0xff00ff # Magenta [5]
-		    .word 0xffff00 # Yellow  [6]
-		    .word 0xffffff # White   [7]
+		   .word 0x0000ff # Blue    [1]
+		   .word 0x00ff00 # Green   [2]
+		   .word 0xff0000 # Red     [3]
+		   .word 0x00ffff # Cyan    [4]
+		   .word 0xff00ff # Magenta [5]
+		   .word 0xffff00 # Yellow  [6]
+		   .word 0xffffff # White   [7]
     BoxTable:
                    .byte 1,1,1    # Square 1 (x, y, color number from ColorTable)
-		    .byte 17,1,2   # Square 2 ''
-		    .byte 1,17,3   # Square 3 ''
-		    .byte 1,1,6    # Square 4 ''
+		   .byte 17,1,2   # Square 2 ''
+		   .byte 1,17,3   # Square 3 ''
+		   .byte 17,17,6  # Square 4 ''
+		   .byte
     nextPrompt:    .asciiz "next int in pattern: "
     winPrompt:     .asciiz "You win\n"
     losePrompt:    .asciiz "You lose\n"
@@ -82,7 +82,7 @@ _fillSeqArray:
     addi  $sp, $sp, 4        # increment stack to original position
     
     jr    $ra
-    
+
 #########
 # Procedure: RandGen
 # Generates random number 
@@ -227,15 +227,17 @@ _pLoop:
 # Procedure: NewLine
 # Prints newline character
 NewLine:
-    addi  $sp, $sp, -4         # save space for 1 word, decrements the stack pointer
+    addi  $sp, $sp, -8         # save space for 1 word, decrements the stack pointer
+    sw    $a0, 4($sp)
     sw    $ra, 0($sp)          # push $ra to stack so that jump back is saved
 
     li    $v0, 11              # specify character print service
-    addi  $a0,$0,0xA	        # $a0 = newline character
+    addi  $a0,$0,0xA	       # $a0 = newline character
     syscall                    # print newline
 
     lw    $ra, 0($sp)          # $ra = restore jump back to function
-    addi  $sp, $sp, 4          # increment stack to original position
+    lw    $a0, 4($sp)
+    addi  $sp, $sp, 8          # increment stack to original position
     
     jr    $ra   
 
@@ -254,7 +256,7 @@ DisplayBox:
     mult  $t1, $t2             # row offset calculation = row index * # of bytes in BoxTable row
     mflo  $t3                  # $t3 = row offset calculation
     add   $t0, $t0, $t3      
-    #beqz  $a1, _clearLight     # if $a1 == 0 then clear light box from bitmap display else
+    beqz  $a1, _clearLight     # if $a1 == 0 then clear light box from bitmap display else
     lb    $a2, 2($t0)          # $a2 = color number from BoxTable    
     j     _displayBox
 

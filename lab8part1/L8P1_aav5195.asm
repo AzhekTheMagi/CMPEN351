@@ -21,6 +21,7 @@
 		   .word 0xff00ff # Magenta [5]
 		   .word 0xffff00 # Yellow  [6]
 		   .word 0xffffff # White   [7]
+		   .word 0xffa500 # Orange  [8]
     Colors:       .word   0x000000        # background color (black)
                   .word   0xffffff        # foreground color (white)
     DigitTable:
@@ -51,10 +52,10 @@
                    .word 4, 6, 8, 10, 11, 12, 13, 14, 14, 15, 15, 16, 16, 17, 17, 17, 17, 17
 		   .word 17, 17, 17, 17, 16, 16, 15, 15, 14, 14, 13, 12, 11, 10, 8, 6, 4
     CircleTable:
-                   .word 60,127,1  # Circle 1 (x, y, color number from ColorTable)
-		   .word 127,60,2  # Circle 2 ''
-		   .word 195,127,3 # Circle 3 ''
-		   .word 127,195,6 # Circle 4 ''
+                   .word 130,60,8   # Circle 1 (x, y, color number from ColorTable)
+		   .word  60,130,1  # Circle 2 ''
+		   .word 190,130,3  # Circle 3 ''
+		   .word 130,190,2  # Circle 4 ''
     BoxTable:
                    .word 1,1,1    # Square 1 (x, y, color number from ColorTable)
 		   .word 17,1,2   # Square 2 ''
